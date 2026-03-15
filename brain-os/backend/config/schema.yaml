@@ -1,0 +1,112 @@
+# BrainOS config schema — single source of truth for intents and behavior
+# Nothing hardcoded; LLM and config drive intelligence.
+
+app:
+  name: BrainOS
+  env: development  # development | staging | production
+
+llm:
+  # Provider: openai | anthropic | gemini (override with env BRAINOS_LLM_PROVIDER=gemini)
+  provider: openai
+  model: gpt-4o
+  fast_model: gpt-4o-mini
+  vision_model: gpt-4o
+  api_key_env: OPENAI_API_KEY
+  # For Gemini: set provider to gemini (or BRAINOS_LLM_PROVIDER=gemini), api_key_env: GOOGLE_API_KEY or GEMINI_API_KEY, model: gemini-1.5-flash
+  options: {}
+  # Optional: override answer personas (key: customer_support, legal, sales, internal_expert). Value = system prompt addition.
+  # personas:
+  #   customer_support: "Answer in a warm, helpful, friendly tone..."
+  #   legal: "Answer in a formal, precise, citation-heavy style..."
+
+embedding:
+  provider: openai
+  model: text-embedding-3-small
+  dimensions: 1536
+  api_key_env: OPENAI_API_KEY
+
+vector_store:
+  type: qdrant  # qdrant | pinecone | chroma | memory
+  url_env: QDRANT_URL
+  host_env: QDRANT_HOST
+  port_env: QDRANT_PORT
+  collection_prefix: brainos
+  vector_size: 1536
+
+database:
+  url_env: DATABASE_URL
+  # Tables created by migrations
+
+storage:
+  type: local  # local | s3 | supabase
+  path_env: STORAGE_PATH
+  bucket_env: STORAGE_BUCKET
+
+intents:
+  query:
+    description: "Answer user question using retrieved context; stream with citations"
+    prompts_path: prompts/query.yaml
+    query_expansion: true
+  ingest:
+    description: "Chunk, embed, and index document content"
+    prompts_path: prompts/ingest.yaml
+  freshness:
+    description: "Detect semantic changes and summarize diffs"
+    prompts_path: prompts/freshness.yaml
+  gap_analysis:
+    description: "Cluster unanswered questions and suggest fixes"
+    prompts_path: prompts/gap.yaml
+  pii_scan:
+    description: "Detect and classify PII in text"
+    prompts_path: prompts/pii.yaml
+  scraper_legal:
+    description: "Evaluate URL against ToS for scraping compliance"
+    prompts_path: prompts/scraper_legal.yaml
+  crawl:
+    description: "LLM-guided crawl: select relevant links, extract topic, clean content"
+    prompts_path: prompts/crawl.yaml
+  competitive:
+    description: "Compare internal vs competitor content"
+    prompts_path: prompts/competitive.yaml
+  follow_ups:
+    description: "Generate 4 follow-up questions in categories Compliance, Comparison, Action Plan, Technical"
+    prompts_path: prompts/follow_ups.yaml
+  domain_expert:
+    description: "Domain-specific chunking and retrieval strategy"
+    prompts_path: prompts/domain_expert.yaml
+
+outputs:
+  streaming:
+    include_confidence: true
+    include_freshness_timestamp: true
+    follow_up_count: 4
+    copy_with_citation_format: true
+  freshness_report:
+    notify_on_change: true
+    semantic_diff: true
+    auto_patch_index: true
+  gap_report:
+    schedule: "0 9 * * 1"  # Weekly Monday 9am
+    cluster_by_topic: true
+    priority_ranking: true
+    ai_fix_suggestions: true
+  exports:
+    formats: [jsonl, parquet, csv, json_schema]
+  analytics:
+    track_query_volume: true
+    track_top_questions: true
+    track_unanswered: true
+    track_source_usage: true
+    agent_activity_log: true
+  compliance:
+    pii_scan_on_ingest: true
+    gdpr_export: true
+    ingestion_audit_chain: true
+    scraping_verdict_evidence: true
+
+deployments:
+  web_widget: true
+  slack_bot: true
+  teams_bot: true
+  whatsapp: false
+  rest_api: true

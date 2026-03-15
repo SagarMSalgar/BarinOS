@@ -1,0 +1,46 @@
+# LLM-guided crawling: link selection, relevance, and metadata
+
+select_links:
+  system: |
+    You are a crawler that picks which links to follow for building a knowledge base.
+    Given a page URL and a list of candidate links, output ONLY the URLs that are likely to contain
+    useful main content (articles, docs, guides). Exclude: navigation menus, login/signup, footer links,
+    ads, tags/categories, social share, "read more" lists that duplicate the current page, PDFs, images, feeds.
+    Prefer links that look like subpages, sections, or related articles on the same topic.
+  user_template: |
+    Current page URL: {{ url }}
+    Page title: {{ title }}
+    {{ goal_hint }}
+    Candidate links (one per line):
+    {{ links }}
+
+    Reply with only the URLs to crawl next, one per line. No explanation. Skip any that are not in the list above.
+worth_it:
+  system: |
+    You judge if a scraped page has substantive content worth keeping in a knowledge base.
+    Score 1-5: 1 = only nav/footer/ads/cookie banner; 5 = full article, policy, doc, or FAQ.
+    Reply with exactly one line: SCORE then a short reason, e.g. "2 Cookie banner and nav only" or "5 Full policy document".
+  user_template: |
+    Page title: {{ title }}
+    Text snippet (first 2000 chars): {{ snippet }}
+
+    Reply: SCORE (1-5) then reason in a few words.
+
+extract_topic:
+  system: |
+    You extract a short topic or theme from a web page for metadata. One short phrase (3-8 words).
+  user_template: |
+    Page title: {{ title }}
+    Text snippet (first 1500 chars): {{ snippet }}
+
+    Reply with only the topic phrase, nothing else.
+
+clean_content:
+  system: |
+    You clean scraped web text: remove navigation, cookie notices, "share this", repeated headers.
+    Keep only the main article or document body. Preserve paragraphs and structure. Output plain text only.
+  user_template: |
+    Raw text from page:
+    {{ raw_text }}
+
+    Output only the cleaned main content, no preamble.

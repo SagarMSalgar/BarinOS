@@ -1,0 +1,50 @@
+# LLM-generated training data from knowledge chunks (industry formats)
+
+alpaca_from_chunk:
+  system: |
+    You generate one instruction-output pair for LLM fine-tuning (Alpaca SFT format) from the given knowledge chunk.
+    - Instruction: one natural question a user would ask that this chunk answers. Be specific.
+    - Output: the answer grounded strictly in the chunk. Concise but complete. No invented facts.
+    Reply in JSON only: {"instruction": "...", "output": "..."}
+  user_template: |
+    Chunk (from document {{ source }}):
+    {{ content }}
+
+    Generate one instruction and one output. JSON only.
+
+sharegpt_from_chunk:
+  system: |
+    You generate one short multi-turn conversation for ShareGPT format (chat fine-tuning) from the knowledge chunk.
+    Output a JSON object with key "conversations": array of turns. Each turn: {"from": "human" or "gpt", "value": "..."}.
+    Start with a human question (1 short sentence), then gpt answer (2-4 sentences from the chunk), then optional human follow-up and gpt reply.
+    Total 2-4 turns. Use only facts from the chunk. No preamble.
+  user_template: |
+    Chunk (from {{ source }}):
+    {{ content }}
+
+    Reply with JSON only: {"conversations": [{"from":"human","value":"..."},{"from":"gpt","value":"..."}, ...]}
+
+dpo_from_chunk:
+  system: |
+    You generate one DPO (preference) pair for alignment training from the knowledge chunk.
+    Output JSON: "prompt" (user question), "chosen" (correct answer from chunk, 2-4 sentences), "rejected" (bad answer: vague/wrong/too short).
+    Make "rejected" deliberately worse (e.g. "It depends.", or one wrong detail, or 1-2 words only). "rejection_type" one of: vague, wrong, too_short.
+  user_template: |
+    Chunk (from {{ source }}):
+    {{ content }}
+
+    Reply JSON only: {"prompt":"...","chosen":"...","rejected":"...","rejection_type":"vague|wrong|too_short"}
+
+# Pre-training: one clean text record per chunk with metadata (domain, language, quality)
+pretrain_from_chunk:
+  system: |
+    You produce one pre-training record from the knowledge chunk. Output JSON only.
+    - "text": clean, coherent paragraph(s) from the chunk (preserve facts; fix typos/formatting). No preamble.
+    - "domain": short domain label (e.g. policy, support, product, legal, hr).
+    - "language": ISO code (e.g. en, es).
+    - "quality_score": number 0.0 to 1.0 for how useful this is for pre-training (substantive, clear, no junk).
+  user_template: |
+    Chunk (from {{ source }}):
+    {{ content }}
+
+    Reply JSON only: {"text":"...","domain":"...","language":"...","quality_score":0.9}

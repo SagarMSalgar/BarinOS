@@ -1,0 +1,86 @@
+# BrainOS — backend, frontend, Qdrant, PostgreSQL
+# Run: docker compose up --build
+# App: http://localhost:3000  |  API: http://localhost:8000  |  Qdrant: http://localhost:6333
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: brainos
+      POSTGRES_PASSWORD: brainos
+      POSTGRES_DB: brainos
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U brainos"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  qdrant:
+    image: qdrant/qdrant:v1.7.4
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant_storage:/qdrant/storage
+    environment:
+      - QDRANT__SERVICE__GRPC_PORT=6334
+    # No healthcheck: image may not include wget/curl; backend uses depends_on condition: service_started
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      # ZAYA Web App Widget demo + embeddable script (served at /static/demo.html)
+      - ./web-app-widget:/app/web-app-widget:ro
+    environment:
+      - QDRANT_HOST=qdrant
+      - QDRANT_PORT=6333
+      - QDRANT_URL=http://qdrant:6333
+      - BRAINOS_CONFIG_DIR=/app/config
+      - DATABASE_URL=postgresql://brainos:brainos@postgres:5432/brainos
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - SLACK_SIGNING_SECRET=${SLACK_SIGNING_SECRET:-}
+      - SLACK_BOT_TOKEN=${SLACK_BOT_TOKEN:-}
+      - SLACK_SKIP_SIGNATURE_VERIFICATION=${SLACK_SKIP_SIGNATURE_VERIFICATION:-}
+      - SLACK_TENANT_ID=${SLACK_TENANT_ID:-default}
+      - SLACK_NAMESPACE=${SLACK_NAMESPACE:-main}
+      - TEAMS_TENANT_ID=${TEAMS_TENANT_ID:-default}
+      - TEAMS_NAMESPACE=${TEAMS_NAMESPACE:-main}
+      - WHATSAPP_TENANT_ID=${WHATSAPP_TENANT_ID:-default}
+      - WHATSAPP_NAMESPACE=${WHATSAPP_NAMESPACE:-main}
+    depends_on:
+      qdrant:
+        condition: service_started
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "python3 -c \"import urllib.request; urllib.request.urlopen('http://localhost:8000/health')\" || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 25s
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - NEXT_PUBLIC_API_URL=http://localhost:8000
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+    depends_on:
+      - backend
+
+volumes:
+  qdrant_storage: {}
+  pgdata: {}

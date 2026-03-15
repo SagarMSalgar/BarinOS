@@ -1,0 +1,96 @@
+# Browser extension: compare, fact-check, position, email, contract, research, form
+
+text_vs_kb_compare:
+  system: |
+    You compare SELECTED TEXT (from a webpage, email, or document) against KNOWLEDGE BASE EXCERPTS.
+    For each excerpt, say if it is CONSISTENT with the selected text (same meaning, supports it) or CONFLICTING (contradicts or meaningfully differs).
+    Reply with JSON only:
+    {"consistent": [{"document_name": "string", "snippet": "excerpt or summary", "note": "brief note"}], "conflicts": [{"document_name": "string", "snippet": "excerpt", "note": "how it conflicts", "confidence": 0.0-1.0}]}
+    Use semantic understanding: same meaning in different words = consistent; opposite meaning = conflict. Omit empty arrays if none.
+  user_template: |
+    SELECTED TEXT:
+    {{ selected_text }}
+
+    KNOWLEDGE BASE EXCERPTS (with source):
+    {{ excerpts }}
+
+    JSON only:
+
+text_vs_kb_factcheck:
+  system: |
+    You fact-check a CLAIM against KNOWLEDGE BASE EXCERPTS.
+    Determine if the claim is CORRECT (supported by your docs), INCORRECT (contradicted), or UNVERIFIED (not found).
+    Reply with JSON only:
+    {"verdict": "correct"|"incorrect"|"unverified", "explanation": "one sentence", "sources": [{"document_name": "string", "snippet": "relevant excerpt", "supports": true|false}], "correct_info": "if incorrect, what your docs actually say (optional)"}
+  user_template: |
+    CLAIM: {{ claim }}
+
+    KNOWLEDGE BASE EXCERPTS:
+    {{ excerpts }}
+
+    JSON only:
+
+text_vs_kb_position:
+  system: |
+    Given a TOPIC or competitor claim, state "our position" based only on the KNOWLEDGE BASE EXCERPTS (e.g. sales playbook, internal docs).
+    Reply with JSON only:
+    {"position": "string (your position / talking point)", "sources": [{"document_name": "string", "snippet": "string"}], "confidence": 0.0-1.0}
+  user_template: |
+    TOPIC / EXTERNAL CLAIM: {{ selected_text }}
+
+    KNOWLEDGE BASE EXCERPTS:
+    {{ excerpts }}
+
+    JSON only:
+
+email_analyze:
+  system: |
+    Analyze an email and extract: (1) key information (dates, numbers, commitments, decisions), (2) suggested actions, (3) one paragraph "reply context" that summarizes relevant knowledge base points to include when replying.
+    Reply with JSON only:
+    {"key_info": ["string"], "suggested_actions": ["string"], "reply_context": "string", "related_doc_names": ["string from excerpts"]}
+  user_template: |
+    EMAIL SUBJECT: {{ subject }}
+    EMAIL BODY:
+    {{ body }}
+
+    RELEVANT KNOWLEDGE BASE EXCERPTS:
+    {{ excerpts }}
+
+    JSON only:
+
+contract_review:
+  system: |
+    Compare CONTRACT CLAUSES (from the given document) against STANDARD TERMS (from knowledge base). List: (1) consistent_clauses, (2) deviations with risk level (low/medium/high), (3) clauses in contract not in standard.
+    Reply with JSON only:
+    {"consistent": ["brief label"], "deviations": [{"clause": "string", "contract_says": "string", "standard_says": "string", "risk": "low|medium|high", "action": "string"}], "not_in_standard": [{"clause": "string", "summary": "string"}]}
+  user_template: |
+    CONTRACT TEXT (excerpt):
+    {{ contract_text }}
+
+    STANDARD TERMS (from knowledge base):
+    {{ standard_excerpts }}
+
+    JSON only:
+
+research_synthesize:
+  system: |
+    Synthesize the following RESEARCH SOURCES into: (1) key_findings (bulleted), (2) agreements (where sources agree), (3) disagreements (where they differ), (4) synthesis_draft (2-4 paragraphs with citations [1], [2]).
+    Reply with JSON only:
+    {"key_findings": ["string"], "agreements": ["string"], "disagreements": ["string"], "synthesis_draft": "string"}
+  user_template: |
+    SOURCES (each block is one source):
+    {{ sources }}
+
+    JSON only:
+
+form_field_suggest:
+  system: |
+    Given FORM FIELD LABELS/NAMES and KNOWLEDGE BASE EXCERPTS, suggest values that could fill those fields. Only suggest when you find a clear match. Reply with JSON only:
+    {"suggestions": [{"field_label": "string", "suggested_value": "string", "source_document": "string", "confidence": 0.0-1.0}]}
+  user_template: |
+    FORM FIELDS: {{ field_labels }}
+
+    KNOWLEDGE BASE EXCERPTS:
+    {{ excerpts }}
+
+    JSON only:

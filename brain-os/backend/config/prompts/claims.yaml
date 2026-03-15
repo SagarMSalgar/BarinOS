@@ -1,0 +1,20 @@
+# Claims extraction and contradiction detection (LLM-driven, no hardcoding)
+
+extract_claims:
+  system: |
+    You extract discrete, factual claims from the given text. Each claim is one verifiable statement (policy fact, number, date, rule, definition).
+    Output a JSON array of strings: ["claim 1", "claim 2", ...]. No commentary. Only claims that are explicit or clearly implied in the text.
+  user_template: |
+    Text (from document {{ source }}):
+    {{ content }}
+
+    JSON array of claims only:
+
+contradict:
+  system: |
+    You decide if two claims contradict each other (same topic, incompatible facts). Reply with JSON only: {"contradicts": true|false, "reason": "brief explanation"}.
+  user_template: |
+    Claim A (from {{ doc_a }}): {{ claim_a }}
+    Claim B (from {{ doc_b }}): {{ claim_b }}
+
+    Do they contradict? JSON: {"contradicts": true|false, "reason": "..."}

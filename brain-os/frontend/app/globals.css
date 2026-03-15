@@ -1,0 +1,172 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Unified violet theme — all colours complement each other */
+  --bg: #faf5ff;
+  --bg-subtle: #f5f3ff;
+  --surface: #ede9fe;
+  --card: #ffffff;
+  --border: #e9e5f0;
+  --primary: #7c3aed;
+  --primary-light: #a78bfa;
+  --primary-dark: #6d28d9;
+  --accent: #8b5cf6;
+  --text: #1e1b4b;
+  --text-muted: #5b21b6;
+  --muted: #64748b;
+  --success: #059669;
+  --success-bg: #d1fae5;
+  --warning: #d97706;
+  --warning-bg: #fef3c7;
+  --danger: #e11d48;
+  --danger-bg: #ffe4e6;
+  /* 8px grid */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --content-max-w: 90rem;
+}
+
+/* Glassmorphic components — frosted glass effect across Memory, Ask Doc, and whole UI */
+@layer components {
+  .glass-panel {
+    @apply backdrop-blur-xl bg-white/70 border border-violet-200/30 shadow-lg;
+  }
+  .glass-card {
+    @apply backdrop-blur-md bg-white/70 border border-violet-200/30 rounded-2xl shadow-md;
+  }
+  .glass-card-strong {
+    @apply backdrop-blur-xl bg-white/85 border border-violet-200/40 rounded-2xl shadow-glass-lg;
+  }
+  .glass-header {
+    @apply backdrop-blur-xl bg-white/80 border-b border-violet-200/30 shadow-sm;
+  }
+  .glass-input {
+    @apply backdrop-blur-sm bg-white/60 border border-violet-200/40 rounded-xl focus:ring-2 focus:ring-primary/30 focus:border-primary/50 text-slate-800 placeholder:text-slate-400;
+  }
+  .glass-tab-active {
+    @apply bg-primary text-white shadow-md border border-violet-400/30;
+  }
+  .glass-tab-inactive {
+    @apply backdrop-blur-sm bg-white/50 text-slate-600 border border-violet-200/40 hover:bg-violet-50/70 hover:border-violet-300/50;
+  }
+  /* Theme-aligned semantic colours (complement primary violet) */
+  .theme-text { @apply text-slate-800; }
+  .theme-muted { @apply text-slate-500; }
+  .theme-success { @apply text-emerald-600; }
+  .theme-success-bg { @apply bg-emerald-50 border-emerald-200/50; }
+  .theme-warning { @apply text-amber-600; }
+  .theme-warning-bg { @apply bg-amber-50 border-amber-200/50; }
+  .theme-danger { @apply text-rose-600; }
+  .theme-danger-bg { @apply bg-rose-50 border-rose-200/50; }
+  .theme-page-bg { @apply bg-gradient-to-br from-violet-50/95 via-fuchsia-50/30 to-violet-100/80; }
+  .btn-primary { @apply rounded-xl bg-primary px-4 py-2.5 text-sm font-medium text-white shadow-glass border border-white/20 hover:opacity-95 disabled:opacity-50; }
+  .btn-secondary { @apply rounded-xl glass-tab-inactive px-4 py-2.5 text-sm font-medium text-slate-700; }
+  /* Page layout — consistent container and section spacing (8px grid) */
+  .page-container {
+    @apply mx-auto max-w-5xl px-6 py-8;
+  }
+  .page-container-narrow {
+    @apply mx-auto max-w-4xl px-6 py-8;
+  }
+  .page-title {
+    @apply text-xl font-semibold text-slate-800 tracking-tight;
+  }
+  .page-subtitle {
+    @apply mt-1 text-sm text-slate-600;
+  }
+  .section-title {
+    @apply text-sm font-semibold text-slate-500 uppercase tracking-wide;
+  }
+  .section-spacing {
+    @apply mt-8;
+  }
+  .section-spacing-sm {
+    @apply mt-6;
+  }
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.stream-cursor::after {
+  content: '▋';
+  animation: blink 1s step-end infinite;
+  color: var(--primary);
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+*:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+@keyframes confetti-fall {
+  to {
+    transform: translateY(105vh);
+    opacity: 0;
+  }
+}
+.animate-confetti-fall {
+  animation: confetti-fall 2s ease-out forwards;
+}
+
+@keyframes cite-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+.cite-pill {
+  animation: cite-in 0.28s ease-out forwards;
+  opacity: 0;
+}
+
+/* Hub Decision Support — scrollbar & risk gradient (from reference HTML) */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #a78bfa;
+  border-radius: 10px;
+}
+.risk-gradient {
+  background: linear-gradient(90deg, #10b981 0%, #f59e0b 50%, #ef4444 100%);
+}
+
+/* Verification result card — polished gradient border and background */
+.verification-card {
+  background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 50%, #d1fae5 100%);
+  border: 1px solid rgba(34, 197, 94, 0.35);
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.08);
+}
+.verification-card-row-updated {
+  background: linear-gradient(90deg, rgba(251, 191, 36, 0.15) 0%, rgba(254, 243, 199, 0.4) 100%);
+}
+.verification-card-row-not-verifiable {
+  background: linear-gradient(90deg, rgba(148, 163, 184, 0.12) 0%, rgba(241, 245, 249, 0.5) 100%);
+}
+.verification-card-row-current {
+  background: linear-gradient(90deg, rgba(34, 197, 94, 0.1) 0%, rgba(240, 253, 244, 0.5) 100%);
+}
+.verification-card-row-error {
+  background: linear-gradient(90deg, rgba(239, 68, 68, 0.08) 0%, rgba(254, 226, 226, 0.3) 100%);
+}
+.verification-card .verification-card-header {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.12) 0%, rgba(236, 253, 245, 0.5) 100%);
+}

@@ -1,0 +1,47 @@
+{
+  "manifest_version": 3,
+  "name": "BrainOS",
+  "version": "3.0.0",
+  "description": "Compare any text with your knowledge base. Fact-check, email intel, meeting prep, contract review, research, forms, and more.",
+  "permissions": ["storage", "activeTab", "scripting", "contextMenus"],
+  "host_permissions": ["<all_urls>"],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "options_page": "options.html",
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://web.whatsapp.com/*"],
+      "js": ["content-whatsapp.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://mail.google.com/*"],
+      "js": ["content-gmail.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://docs.google.com/*"],
+      "js": ["content-docs.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://calendar.google.com/*"],
+      "js": ["content-calendar.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle"
+    }
+  ]
+}

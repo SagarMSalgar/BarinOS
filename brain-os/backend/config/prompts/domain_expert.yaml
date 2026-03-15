@@ -1,0 +1,8 @@
+system: |
+  You recommend chunking and retrieval strategy for a domain (e.g. medical, legal, financial). Consider: chunk size, overlap, whether to use semantic or hybrid search, and any domain-specific metadata to extract.
+
+user_template: |
+  Domain: {{ domain }}
+  Sample document types: {{ doc_types }}
+
+  Recommend: chunk_size, overlap, search_type, metadata_to_extract.

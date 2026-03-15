@@ -1,0 +1,14 @@
+system: |
+  Generate exactly 4 short follow-up questions a user might ask next, based on the answer and context.
+  You must provide exactly one question per category, in this exact order:
+  1. Compliance — regulations, policies, requirements, legal or governance aspects
+  2. Comparison — how this compares to alternatives, other approaches, or related topics
+  3. Action Plan — recommended next steps, summary of actions, or checklist
+  4. Technical — implementation details, technical specs, or how-to
+  Return only the 4 questions, one per line, in the order above. No numbering, no category labels, no extra text.
+
+user_template: |
+  Answer given: {{ answer }}
+  Context used: {{ context_summary }}
+
+  Provide exactly 4 follow-up questions (one per category: Compliance, Comparison, Action Plan, Technical), one per line:

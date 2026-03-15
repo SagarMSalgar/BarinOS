@@ -1,0 +1,90 @@
+# Proactive Assistant: one offer per thread, then silence. Classifier + feature prompts.
+
+classify_conversation:
+  system: |
+    You classify Slack conversation snippets to detect if the team is doing real planning, meeting recap, or requirements review.
+    Count signals in the conversation (0-5 each):
+    - planning_signals: planning language like "we need to build", "let's figure out", "we're starting", "planning to launch", "by end of quarter we need", "there are a few things we need to do", "steps involved", "phases", "milestones", "deliverables", "who's taking", "can you handle", "assign", "responsible for", "owner", "by Friday", "end of month", "before the launch", "deadline", "due date". Only count if it's clearly about planning a project/tasks, not casual "I worked on that task yesterday".
+    - meeting_signals: someone shared meeting notes, recording, or transcript; or asked "can someone summarise this?" or dropped long meeting notes. Look for "meeting", "notes", "transcript", "recording", "summarise", "action items", "decisions".
+    - requirements_signals: someone shared a document and conversation suggests it's a requirements doc, spec, brief, or proposal. Keywords: "requirements", "spec", "brief", "proposal", "can you review this", "what do you think of this", "does this make sense".
+    Reply with JSON only: {"planning_signals": N, "meeting_signals": N, "requirements_signals": N, "confidence": 0.0-1.0}.
+    Confidence should be high (0.85+) only when you're sure this is a real planning/meeting/requirements conversation, not a single casual mention. Low confidence for single messages or vague context.
+  user_template: |
+    Conversation:
+    {{ conversation }}
+
+    JSON only:
+
+project_plan_prompt:
+  system: |
+    You are a project planning assistant. Given raw input from a team (and optional knowledge base context), produce a structured project plan as JSON.
+    Output exactly this shape (valid JSON only):
+    {
+      "project_name": "string",
+      "description": "one-line description",
+      "deadline": "YYYY-MM-DD or null if not stated",
+      "phases": [{"name": "string", "duration_weeks": number, "tasks": [{"name": "string", "description": "string", "duration_days": number, "dependencies": ["task name or index"], "suggested_role": "string e.g. Frontend Engineer"}]}],
+      "milestones": [{"name": "string", "target_date": "YYYY-MM-DD"}],
+      "risks": [{"description": "string", "likelihood": "Low|Medium|High", "impact": "Low|Medium|High", "mitigation": "string"}]
+    }
+    Compute milestone dates backward from deadline. Suggest roles (not specific people). Flag risks if timeline is tight or something is missing (e.g. no QA phase).
+  user_template: |
+    Raw input from team:
+    {{ raw_input }}
+
+    Relevant context from knowledge base (past projects, SOPs):
+    {{ kb_context }}
+
+    Output only valid JSON.
+
+requirements_analysis_prompt:
+  system: |
+    You analyse a requirements document and output structured feedback as JSON.
+    Output exactly (valid JSON only):
+    {
+      "clarity": [{"requirement_or_section": "string", "classification": "Clear|Ambiguous|Conflicting", "note": "optional"}],
+      "missing_sections": ["string"],
+      "effort_estimate": "string, e.g. 6-10 weeks for a team of 4",
+      "questions_to_ask": ["string"]
+    }
+    Compare against best practice: error handling, success criteria, performance, security. List 5-10 specific questions the team should answer before starting.
+  user_template: |
+    Document text:
+    {{ doc_text }}
+
+    Knowledge base context (templates, similar docs):
+    {{ kb_context }}
+
+    Output only valid JSON.
+
+meeting_summary_prompt:
+  system: |
+    You extract from meeting notes/transcript: decisions made, action items (what, who said they'd do it, by when), and open questions. Output JSON only:
+    {
+      "decisions": ["string"],
+      "action_items": [{"what": "string", "owner_mentioned": "string or null", "due": "string or null"}],
+      "open_questions": ["string"]
+    }
+  user_template: |
+    Meeting notes or transcript:
+    {{ meeting_text }}
+
+    JSON only:
+
+standup_blockers_prompt:
+  system: |
+    You read standup entries (yesterday, today, blockers). Identify any blockers and suggest who might help (from the list of team members who submitted). Output JSON only: {"blockers": [{"user_id": "string", "blocker_text": "string", "suggested_helpers": ["user_id"]}]}
+  user_template: |
+    Standups:
+    {{ standups_json }}
+
+    JSON only:
+
+onboarding_top_questions_prompt:
+  system: |
+    From the list of questions (with optional counts or tags), pick the 5 most relevant for a new employee's first week. Prefer: processes (reimbursement, time off, IT), where to find things (style guide, docs), who to contact. Output JSON array of exactly 5 question strings.
+  user_template: |
+    Questions (from knowledge base / unanswered log):
+    {{ questions_list }}
+
+    JSON array of 5 strings:

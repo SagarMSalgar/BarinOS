@@ -1,0 +1,84 @@
+#brainos-root{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:2147483647}
+#brainos-root>*{pointer-events:auto}
+#brainos-panel{position:fixed;z-index:2147483646;right:16px;top:80px;width:360px;max-width:calc(100vw - 32px);background:#fff;border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,.15);border:1px solid #e2e8f0;font-family:system-ui,sans-serif;font-size:13px;overflow:hidden;display:none}
+#brainos-panel.open{display:block}
+#brainos-panel .panel-header{padding:10px 12px;background:#6366f1;color:#fff;display:flex;justify-content:space-between;align-items:center}
+#brainos-panel .panel-header h3{margin:0;font-size:14px;font-weight:600}
+#brainos-panel .panel-close{background:0 0;border:none;color:#fff;cursor:pointer;font-size:18px;line-height:1;padding:0 4px}
+#brainos-panel .panel-body{padding:12px;max-height:400px;overflow-y:auto}
+#brainos-panel .context-block{background:#f1f5f9;padding:8px 10px;border-radius:8px;margin-bottom:10px;font-size:12px;color:#475569;max-height:80px;overflow-y:auto}
+#brainos-panel .panel-body input[type=text]{width:100%;padding:8px 10px;border:1px solid #e2e8f0;border-radius:6px;margin-bottom:8px;box-sizing:border-box}
+#brainos-panel .panel-body button.ask-btn{width:100%;padding:8px;background:#6366f1;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:13px}
+#brainos-panel .panel-body button.ask-btn:hover{background:#4f46e5}
+#brainos-panel .panel-body button.ask-btn:disabled{opacity:.6;cursor:not-allowed}
+#brainos-panel .answer-block{margin-top:12px;padding-top:12px;border-top:1px solid #e2e8f0;white-space:pre-wrap;word-break:break-word}
+#brainos-panel .answer-block.loading{color:#64748b}
+#brainos-panel .error-msg{color:#dc2626;font-size:12px;margin-top:8px}
+#brainos-float-btn{position:fixed;z-index:2147483645;padding:6px 12px;background:#6366f1;color:#fff;border:none;border-radius:8px;font-size:12px;font-family:system-ui,sans-serif;cursor:pointer;box-shadow:0 2px 8px rgba(99,102,241,.4);display:none}
+#brainos-float-btn.show{display:block}
+
+/* Loading state */
+.brainos-loading-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;min-height:120px}
+.brainos-spinner{width:32px;height:32px;border:3px solid #e2e8f0;border-top-color:#6366f1;border-radius:50%;animation:brainos-spin .8s linear infinite}
+.brainos-loading-text{margin:12px 0 0;color:#64748b;font-size:13px}
+@keyframes brainos-spin{to{transform:rotate(360deg)}}
+/* Comparison / Fact-check / Position panel */
+.brainos-comparison-panel,.brainos-generic-panel{position:fixed;z-index:2147483646;right:20px;top:72px;width:420px;max-width:calc(100vw - 40px);max-height:85vh;background:#fff;border-radius:12px;box-shadow:0 12px 48px rgba(0,0,0,.2);border:1px solid #e2e8f0;font-family:system-ui,sans-serif;font-size:13px;overflow:hidden;display:none}
+.brainos-comparison-panel.open,.brainos-generic-panel.open{display:flex;flex-direction:column}
+.comparison-header{padding:10px 12px;background:#6366f1;color:#fff;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+.comparison-header h3{margin:0;font-size:14px;font-weight:600}
+.comparison-close{background:0 0;border:none;color:#fff;cursor:pointer;font-size:18px;line-height:1;padding:0 4px}
+.comparison-body{padding:12px;overflow-y:auto;flex:1;min-height:0}
+.comparison-body .comparison-result{animation:brainos-fadeIn .35s ease}
+@keyframes brainos-fadeIn{from{opacity:0}to{opacity:1}}
+.comparison-selected{background:#f1f5f9;padding:8px 10px;border-radius:8px;margin-bottom:10px;font-size:12px;color:#475569;white-space:pre-wrap;word-break:break-word;max-height:120px;overflow-y:auto}
+.comparison-result{margin-top:8px}
+.comparison-section{margin:12px 0 6px;color:#334155;font-size:12px}
+.comparison-consistent{color:#059669;font-size:12px;font-weight:600;margin-bottom:6px}
+.comparison-conflicts{color:#d97706;font-size:12px;font-weight:600;margin-bottom:6px}
+.comparison-doc{margin-bottom:10px;padding:8px 10px;background:#f8fafc;border-radius:8px;border-left:3px solid #e2e8f0}
+.comparison-doc.conflict{border-left-color:#f59e0b}
+.doc-name{font-weight:600;color:#475569;font-size:12px;display:block;margin-bottom:4px}
+.comparison-doc p{margin:0 0 4px;font-size:12px;color:#334155;line-height:1.4}
+.doc-note{font-size:11px;color:#64748b}
+.comparison-error{color:#dc2626;padding:8px 0}
+.comparison-empty{color:#64748b;font-size:12px;margin:8px 0}
+.factcheck-verdict{margin:8px 0;font-weight:600;font-size:14px}
+.factcheck-verdict.correct{color:#059669}
+.factcheck-verdict.incorrect{color:#dc2626}
+.factcheck-verdict.unverified{color:#64748b}
+.comparison-explanation{margin:6px 0;font-size:12px;color:#475569}
+.correct-info{margin:8px 0;padding:8px;background:#fef2f2;border-radius:6px;font-size:12px}
+.position-text{margin:8px 0;font-size:13px;line-height:1.5;color:#334155}
+.confidence{font-size:11px;color:#64748b}
+.comparison-actions{margin-top:12px;padding-top:12px;border-top:1px solid #e2e8f0}
+.comparison-ask-btn{width:100%;padding:8px;background:#6366f1;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:13px}
+.comparison-ask-btn:hover{background:#4f46e5}
+
+/* Gmail / Docs / Calendar injected buttons */
+.brainos-gmail-intel-btn,.brainos-docs-verify-btn,.brainos-calendar-brief-btn{position:fixed;z-index:2147483645;right:16px;top:16px;padding:8px 14px;background:#6366f1;color:#fff;border:none;border-radius:8px;font-size:12px;font-family:system-ui,sans-serif;cursor:pointer;box-shadow:0 2px 8px rgba(99,102,241,.4)}
+.brainos-gmail-intel-btn:hover,.brainos-docs-verify-btn:hover,.brainos-calendar-brief-btn:hover{background:#4f46e5}
+.brainos-gmail-intel-btn:disabled,.brainos-docs-verify-btn:disabled,.brainos-calendar-brief-btn:disabled{opacity:.7;cursor:not-allowed}
+.brainos-calendar-brief-btn{top:50px}
+.brainos-docs-verify-btn{top:84px}
+.brainos-form-float-btn{position:fixed;z-index:2147483645;right:16px;bottom:24px;padding:8px 14px;background:#6366f1;color:#fff;border:none;border-radius:8px;font-size:12px;font-family:system-ui,sans-serif;cursor:pointer;box-shadow:0 2px 8px rgba(99,102,241,.4)}
+.brainos-form-float-btn:hover{background:#4f46e5}
+
+/* Verify claims panel */
+.claim-supported{border-left-color:#059669}
+.claim-unsupported{border-left-color:#d97706}
+.claim-explanation,.claim-sources{font-size:12px;color:#64748b;margin:4px 0}
+.reply-context{background:#f1f5f9;padding:8px;border-radius:6px;font-size:12px}
+.doc-tag{display:inline-block;margin:2px 4px 2px 0;padding:2px 8px;background:#e0e7ff;border-radius:4px;font-size:11px}
+.form-suggest-row{margin:8px 0;padding:6px 0;border-bottom:1px solid #e2e8f0}
+.form-label{font-weight:600;color:#475569}
+.form-value{color:#334155;margin-left:8px}
+.form-filled-result{margin-top:12px;padding-top:12px;border-top:1px solid #e2e8f0;display:none}
+.form-filled-result ul{margin:8px 0 0;padding-left:18px}
+.claim-text{margin:4px 0;font-size:12px;color:#334155;line-height:1.4}
+.research-confirm{font-size:13px;line-height:1.5;color:#334155;margin:0}
+.watch-changed{color:#d97706;font-weight:600}
+.watch-unchanged{color:#059669;font-size:12px}
+.watch-summary{margin-top:8px;padding:10px;background:#f8fafc;border-radius:8px;border-left:3px solid #6366f1;font-size:13px;line-height:1.5;color:#334155;white-space:pre-wrap}
+.brief-text,.synthesis-draft{line-height:1.5;margin:8px 0}
+.risk{font-size:11px;color:#dc2626}

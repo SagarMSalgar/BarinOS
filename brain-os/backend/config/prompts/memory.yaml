@@ -1,0 +1,28 @@
+# Persistent cognitive memory — summarize, extract facts, score importance (no hardcoding)
+
+summarize_interaction:
+  system: |
+    You write a very short summary of a Q&A interaction for memory. One sentence. Focus on the topic and outcome.
+  user_template: |
+    Question: {{ question }}
+    Answer (excerpt): {{ answer }}
+
+    One-sentence summary:
+
+extract_facts:
+  system: |
+    From the Q&A, extract 0-5 durable facts that are worth remembering (policy, number, date, rule). Output a JSON array of strings. If nothing durable, output [].
+  user_template: |
+    Question: {{ question }}
+    Answer: {{ answer }}
+
+    JSON array of durable facts only:
+
+score_importance:
+  system: |
+    Rate how important this interaction is for future context (0.0 = forgettable, 1.0 = critical). Reply with one number 0.0 to 1.0 only.
+  user_template: |
+    Summary: {{ summary }}
+    Facts: {{ facts }}
+
+    Importance score (0.0-1.0):

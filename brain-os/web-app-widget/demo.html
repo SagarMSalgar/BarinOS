@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ZAYA Web App Widget — Demo</title>
+  <link rel="stylesheet" href="zaya-widget.css">
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 24px; background: #f9fafb; }
+    h1 { color: #1a1a2e; }
+    .demo-section { background: #fff; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+    .demo-section h2 { margin-top: 0; font-size: 18px; color: #374151; }
+    .demo-section p { color: #6b7280; }
+    .demo-btns { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+    .demo-btns button { padding: 10px 16px; border-radius: 6px; border: 1px solid #e5e7eb; background: #fff; cursor: pointer; font-size: 14px; }
+    .demo-btns button:hover { background: #f3f4f6; }
+    .demo-btns button.primary { background: #16213e; color: #fff; border-color: #16213e; }
+    .demo-btns button.primary:hover { background: #1a1a2e; }
+    code { background: #f3f4f6; padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+    .config-note { background: #fef3c7; padding: 12px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <h1>ZAYA Web Application Support — Demo</h1>
+  <p>This page demonstrates the embeddable ZAYA widget for web applications (Zendesk, Salesforce, Jira, Notion, HR, etc.). Use the floating "Z" button or the buttons below to open the panel with different app contexts.</p>
+
+  <div class="config-note">
+    <strong>Config:</strong> Set your backend URL below. Default <code>apiBase</code> is <code>http://localhost:8000</code>. Ensure CORS allows this origin and your knowledge base has content for the tenant/namespace.
+  </div>
+
+  <div class="demo-section">
+    <h2>1. Zendesk / Freshdesk (Support)</h2>
+    <p>Simulate opening a support ticket. ZAYA will show relevant policy, similar tickets, and suggested response.</p>
+    <div class="demo-btns">
+      <button class="primary" onclick="openZendesk()">Open ZAYA for this ticket</button>
+    </div>
+  </div>
+
+  <div class="demo-section">
+    <h2>2. Salesforce / HubSpot (CRM)</h2>
+    <p>Simulate viewing a deal. ZAYA will show account intelligence, open issues, talking points.</p>
+    <div class="demo-btns">
+      <button class="primary" onclick="openCrm()">Open ZAYA for this deal</button>
+    </div>
+  </div>
+
+  <div class="demo-section">
+    <h2>3. Jira / Linear (Project)</h2>
+    <p>Simulate viewing an issue. ZAYA will show similar past issues, runbooks, ADRs.</p>
+    <div class="demo-btns">
+      <button class="primary" onclick="openJira()">Open ZAYA for this issue</button>
+    </div>
+  </div>
+
+  <div class="demo-section">
+    <h2>4. Notion / Confluence (Wiki)</h2>
+    <p>Simulate viewing a page. ZAYA will show freshness, conflicts, unanswered questions.</p>
+    <div class="demo-btns">
+      <button class="primary" onclick="openNotion()">Open ZAYA for this page</button>
+    </div>
+  </div>
+
+  <div class="demo-section">
+    <h2>5. HR (Leave / Reimbursement)</h2>
+    <p>Simulate an employee on leave form. ZAYA will show policy, balance, approval process.</p>
+    <div class="demo-btns">
+      <button class="primary" onclick="openHr()">Open ZAYA for this form</button>
+    </div>
+  </div>
+
+  <div class="demo-section">
+    <h2>6. Custom context</h2>
+    <p>Any custom app can pass context; ZAYA returns relevant docs and key facts.</p>
+    <div class="demo-btns">
+      <button class="primary" onclick="openCustom()">Open ZAYA (custom)</button>
+    </div>
+  </div>
+
+  <script src="zaya-widget.js"></script>
+  <script>
+    // Configure backend. Change to your BrainOS API base URL.
+    var API_BASE = window.location.port === '8000' ? '' : 'http://localhost:8000';
+    ZAYA.init({
+      apiBase: API_BASE,
+      tenantId: 'default',
+      namespace: 'main',
+      appType: 'custom',
+      floatingButton: true
+    });
+
+    function openZendesk() {
+      ZAYA.init({ apiBase: API_BASE, tenantId: 'default', namespace: 'main', appType: 'zendesk' });
+      ZAYA.show({
+        ticket_subject: 'Refund request for order placed 6 weeks ago',
+        ticket_body: 'Customer is asking for a full refund. Order #ORD-2847. They mentioned they opened the product box. Customer is a premium member.',
+        customer_name: 'Rahul Sharma',
+        customer_ref: 'ORD-2847'
+      });
+    }
+
+    function openCrm() {
+      ZAYA.init({ apiBase: API_BASE, tenantId: 'default', namespace: 'main', appType: 'salesforce' });
+      ZAYA.show({
+        deal_name: 'Acme Corp — Enterprise Renewal',
+        deal_value: '₹24,00,000',
+        deal_stage: 'Negotiation',
+        context_text: 'Renewal due March 31. Support ticket #4821 open 8 days. API performance complaints. Bulk export committed for Q1 2025.'
+      });
+    }
+
+    function openJira() {
+      ZAYA.init({ apiBase: API_BASE, tenantId: 'default', namespace: 'main', appType: 'jira' });
+      ZAYA.show({
+        issue_title: 'Payment gateway timeout on checkout',
+        issue_description: 'Users report payment gateway timing out under load. Need to investigate timeout settings and connection pool.',
+        issue_status: 'In Progress',
+        issue_priority: 'High'
+      });
+    }
+
+    function openNotion() {
+      ZAYA.init({ apiBase: API_BASE, tenantId: 'default', namespace: 'main', appType: 'notion' });
+      ZAYA.show({
+        page_content: 'Customer Onboarding Process v3. Step 1: Send welcome email within 24 hours. Step 2: Schedule kickoff call. Step 3: Data migration. Last edited 4 months ago.',
+        form_type: 'wiki_page'
+      });
+    }
+
+    function openHr() {
+      ZAYA.init({ apiBase: API_BASE, tenantId: 'default', namespace: 'main', appType: 'hr' });
+      ZAYA.show({
+        form_type: 'leave_application',
+        context_text: 'Employee applying for 3 days annual leave. Need policy and balance.'
+      });
+    }
+
+    function openCustom() {
+      ZAYA.init({ apiBase: API_BASE, tenantId: 'default', namespace: 'main', appType: 'custom' });
+      ZAYA.show({
+        page_type: 'internal_dashboard',
+        record_id: 'DASH-001',
+        context_text: 'User is on the logistics tracking view. Need shipping and operations knowledge.'
+      });
+    }
+  </script>
+</body>
+</html>

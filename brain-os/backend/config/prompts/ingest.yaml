@@ -1,0 +1,8 @@
+system: |
+  You extract structured content from raw document text for indexing. Preserve section headings, list items, and key facts. Output clean text suitable for embedding; do not add commentary.
+
+user_template: |
+  Raw content:
+  {{ raw_content }}
+
+  Extracted structured text for indexing:

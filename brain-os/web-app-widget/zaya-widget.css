@@ -1,0 +1,213 @@
+/* ZAYA Web Application Widget — embeddable panel styles */
+#zaya-widget-root {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2147483646;
+}
+#zaya-widget-root * {
+  box-sizing: border-box;
+}
+.zaya-floating-btn {
+  pointer-events: auto;
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.zaya-floating-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 24px rgba(0,0,0,0.3);
+}
+.zaya-panel {
+  pointer-events: auto;
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 420px;
+  max-width: 100%;
+  height: 100%;
+  background: #fff;
+  box-shadow: -4px 0 24px rgba(0,0,0,0.15);
+  display: flex;
+  flex-direction: column;
+  z-index: 2147483647;
+  transform: translateX(100%);
+  transition: transform 0.25s ease-out;
+}
+.zaya-panel.zaya-open {
+  transform: translateX(0);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.zaya-panel-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  color: #fff;
+}
+.zaya-panel-header h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+.zaya-panel-close {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.9);
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0 4px;
+  line-height: 1;
+}
+.zaya-panel-close:hover {
+  color: #fff;
+}
+.zaya-panel-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 20px;
+}
+.zaya-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  color: #6b7280;
+}
+.zaya-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #e5e7eb;
+  border-top-color: #16213e;
+  border-radius: 50%;
+  animation: zaya-spin 0.8s linear infinite;
+}
+@keyframes zaya-spin {
+  to { transform: rotate(360deg); }
+}
+.zaya-section {
+  margin-bottom: 20px;
+}
+.zaya-section-title {
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 8px;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+.zaya-section-content {
+  color: #374151;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.zaya-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.zaya-list li {
+  padding: 8px 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+.zaya-list li:last-child {
+  border-bottom: none;
+}
+.zaya-ok { color: #059669; }
+.zaya-warn { color: #d97706; }
+.zaya-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+.zaya-badge-ok { background: #d1fae5; color: #065f46; }
+.zaya-badge-warn { background: #fef3c7; color: #92400e; }
+.zaya-suggested-response {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 12px;
+  margin: 8px 0;
+  white-space: pre-wrap;
+}
+.zaya-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+.zaya-btn {
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: background 0.2s;
+}
+.zaya-btn-primary {
+  background: #16213e;
+  color: #fff;
+}
+.zaya-btn-primary:hover {
+  background: #1a1a2e;
+}
+.zaya-btn-secondary {
+  background: #f3f4f6;
+  color: #374151;
+}
+.zaya-btn-secondary:hover {
+  background: #e5e7eb;
+}
+.zaya-chat-input-wrap {
+  padding: 12px 20px;
+  border-top: 1px solid #e5e7eb;
+  background: #fff;
+}
+.zaya-chat-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 14px;
+}
+.zaya-chat-input:focus {
+  outline: none;
+  border-color: #16213e;
+}
+.zaya-answer-block {
+  margin-top: 12px;
+  padding: 12px;
+  background: #f9fafb;
+  border-radius: 8px;
+  border-left: 4px solid #16213e;
+}
+.zaya-error {
+  color: #dc2626;
+  padding: 12px;
+  background: #fef2f2;
+  border-radius: 8px;
+}
